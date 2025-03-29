@@ -102,7 +102,10 @@ class HoudiniCacheSubmitDeadline(abstract_submit_deadline.AbstractSubmitDeadline
         return plugin_payload
 
     def process(self, instance):
-        super(HoudiniCacheSubmitDeadline, self).process(instance)
+        if not instance.data["farm_no_render"]:
+            super(HoudiniCacheSubmitDeadline, self).process(instance)
+        else:
+            self.log.debug("render is skipping, using existing files")
         output_dir = os.path.dirname(instance.data["files"][0])
         instance.data["outputDir"] = output_dir
         instance.data["toBeRenderedOn"] = "deadline"
